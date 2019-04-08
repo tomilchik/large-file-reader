@@ -1,4 +1,6 @@
 # large-file-reader
+This project requires Java 8+.
+
 Utility to read and process large data files with queries
 
 The utility processes a large data file consisting of text records where each record represents a list of words. 
