@@ -1,0 +1,180 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>idt-test</groupId>
+  <artifactId>idt-test</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>idt-test</name>
+  <packaging>jar</packaging>
+  
+  <dependencies>
+	<!-- Gson for JSON processing -->
+	<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+	<dependency>
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+	    <version>2.8.0</version>
+	</dependency>
+	<!-- Apache Commons CLI for command line processing -->
+	<!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
+	<dependency>
+	    <groupId>commons-cli</groupId>
+	    <artifactId>commons-cli</artifactId>
+	    <version>1.4</version>
+	</dependency>
+	
+	<!-- Testing support. -->
+	<!-- https://mvnrepository.com/artifact/junit/junit -->
+	<dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>4.12</version>
+	    <scope>test</scope>
+	</dependency>
+	<!--  Google's JIMFS - in-memory file system. Will use for unit tests. -->
+	<dependency>
+	  <groupId>com.google.jimfs</groupId>
+	  <artifactId>jimfs</artifactId>
+	  <version>1.1</version>
+	</dependency>
+	
+	<!-- Mockito -->
+	<dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>1.7.4</version>
+      <scope>test</scope>
+   </dependency>
+   <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito</artifactId>
+      <version>1.7.4</version>
+      <scope>test</scope>
+   </dependency>
+   
+   <!-- Apache Commons Lang -->
+   <!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+	<dependency>
+	    <groupId>commons-lang</groupId>
+	    <artifactId>commons-lang</artifactId>
+	    <version>2.6</version>
+	</dependency>
+  </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+            		<source>1.8</source>
+            		<target>1.8</target>
+        		</configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+            </plugin>
+        	     <plugin>
+	            	<!--
+	            	This plugin will build a full project jar 
+	            	(including all Maven dependency jars, unpackaged into the output jars).
+	            	
+	            	The below used to be true on my machine - but not anymore.
+	            	IMPORTANT: 
+	            	despite setting the phase to "package" (below) this plugin
+	            	** WILL NOT BE TRIGGERED ** by Maven when running "mvn package".
+	            	The only way to trigger it is by calling "mvn package shade:shade".  
+	            	 -->
+	            	<groupId>org.apache.maven.plugins</groupId>
+	                <artifactId>maven-shade-plugin</artifactId>
+	                <version>2.4.3</version>
+	                <executions>
+					     <!-- Run shade goal on package phase -->
+					    <execution>
+							<phase>package</phase>
+							<goals>
+								<goal>shade</goal>
+							</goals>
+						</execution>
+					</executions>
+					
+					<configuration>
+						<goalPrefix>pfx</goalPrefix>
+						<transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<mainClass>com.idt.codechallenge.MatcherRunner</mainClass>
+							</transformer>
+			  			</transformers>
+		            </configuration>
+	            </plugin>
+	        <plugin>
+	        	<!--  adds source code to  separate jar  -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+	   		</plugin> 
+	   		<plugin>
+	   			<!-- generates javadoc, creates separate jar for it -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin> 
+			<!-- 
+			<plugin>
+	            <groupId>org.jacoco</groupId>
+	            <artifactId>jacoco-maven-plugin</artifactId>
+	            <version>0.8.3</version>
+	            <executions>
+	                <execution>
+	                    <goals>
+	                        <goal>prepare-agent</goal>
+	                    </goals>
+	                </execution>
+	                <execution>
+	                    <id>report</id>
+	                    <phase>prepare-package</phase>
+	                    <goals>
+	                        <goal>report</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	        </plugin>
+	         -->  
+        </plugins>
+        
+        <finalName>${project.artifactId}</finalName>
+    </build>
+    <!-- 
+    <reporting>
+	    <plugins>
+    	  	<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-project-info-reports-plugin</artifactId>
+        		<version>2.6</version>
+      		</plugin>
+      		<plugin>
+            	<groupId>org.jacoco</groupId>
+            	<artifactId>jacoco-maven-plugin</artifactId>
+            	<version>0.8.3</version>
+        	</plugin>
+    	</plugins>
+  	</reporting>
+ 	-->
+</project>
