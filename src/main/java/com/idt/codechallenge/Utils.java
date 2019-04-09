@@ -25,7 +25,7 @@ import java.text.NumberFormat;
  * @author leonidtomilchik
  *
  */
-class Utils {
+public class Utils {
 
 	final static int LOCATIONTYPE_FILE = 0;
 	final static int LOCATIONTYPE_URL = 1;
@@ -76,12 +76,12 @@ class Utils {
 	
 	/**
 	 * Opens file at specified location (URL, or full file name) as BufferedInputStream
-	 * @param fileLocation
-	 * @param locationType
+	 * @param fileLocation file path or URL
+	 * @param bufferSize size of BufferedReader buffer
 	 * @return opened BufferedInputStream
-	 * @throws IOException
+	 * @throws IOException when file location is invalid, on unreadable
 	 */
-	static BufferedReader openReader(String fileLocation, int bufferSize) throws IOException, FileNotFoundException {
+	public static BufferedReader openReader(String fileLocation, int bufferSize) throws IOException, FileNotFoundException {
 		int locationType = getFileLocationType(fileLocation);
 		BufferedReader breader = null;
 		if (locationType == LOCATIONTYPE_FILE) {

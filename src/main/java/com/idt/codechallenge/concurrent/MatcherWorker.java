@@ -57,7 +57,9 @@ class MatcherWorker implements Callable<Long> {
 		try {
 			// read until the reader says "no more data"	
 			while (dataReader.willHaveMore()) {
+//System.out.println("*** MW.call(): reader has more");					
 				while ((line = dataReader.readLine()) != null) {
+//System.out.println("*** MW.call(): line="+line);					
 					rowCount++;
 					
 					// tokenize the line, count word frequencies in it, store for subsequent matching against all queries

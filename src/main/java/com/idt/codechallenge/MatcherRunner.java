@@ -7,6 +7,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+import com.idt.codechallenge.concurrent.ConcurrentRecordMatcher;
+
 /**
  * This class runs RecordMatcher: a matcher that implements an algorithm for matching data records against set of queries.
  * For full description of the functionality see method {@link #help(Options) help}.
@@ -21,6 +23,8 @@ import org.apache.commons.cli.Options;
 public class MatcherRunner {
 
 	// command line option names
+	private final static String OPT_CONCURRENT 			= "c";
+	private final static String OPT_WORKERCOUNT			= "w";
 	private final static String OPT_SUPERVERBOSE 		= "vv";
 	private final static String OPT_VERBOSE 			= "v";
 	private final static String OPT_OPTIMIZE_DATAREADS 	= "od";
@@ -52,30 +56,49 @@ public class MatcherRunner {
 			}		
 
 			// with all options that are on/off: in absence of a flag let the matcher decide on a default
-			Boolean isSuperVerbose = (line.hasOption(OPT_SUPERVERBOSE)? true : null);
-			Boolean isVerbose = (line.hasOption(OPT_VERBOSE)? true : null);
-			Boolean isOptimizeDataReads= (line.hasOption(OPT_OPTIMIZE_DATAREADS)? true : null);
-			Boolean isOptimizeQueryReads = (line.hasOption(OPT_OPTIMIZE_QUERYREADS)? true : null);
+			Boolean isConcurrent = (line.hasOption(OPT_CONCURRENT)? true : false);					System.out.println("isConcurrent="+isConcurrent);	
+			Integer workerCount = null;
+			Long val = (Long)line.getParsedOptionValue(OPT_WORKERCOUNT);
+			if (val != null) workerCount = val.intValue();											System.out.println("workerCount="+workerCount);		
+			Boolean isSuperVerbose = (line.hasOption(OPT_SUPERVERBOSE)? true : null);				System.out.println("isSuperVerbose="+isSuperVerbose);	
+			Boolean isVerbose = (line.hasOption(OPT_VERBOSE)? true : null);							System.out.println("isVerbose="+isVerbose);	
+			Boolean isOptimizeDataReads= (line.hasOption(OPT_OPTIMIZE_DATAREADS)? true : null);		System.out.println("isOptimizeDataReads="+isOptimizeDataReads);	
+			Boolean isOptimizeQueryReads = (line.hasOption(OPT_OPTIMIZE_QUERYREADS)? true : null);	System.out.println("isOptimizeQueryReads="+isOptimizeQueryReads);	
 			
-			Double minFreeMemRatio = (Double)line.getParsedOptionValue(OPT_MINFREEMEMRATIO);
-			Integer bufferSize = (Integer)line.getParsedOptionValue(OPT_BUFFERSIZE);
+			Double minFreeMemRatio = (Double)line.getParsedOptionValue(OPT_MINFREEMEMRATIO);		System.out.println("minFreeMemRatio="+minFreeMemRatio);	
+			Integer bufferSize = null;
+			val = (Long)line.getParsedOptionValue(OPT_BUFFERSIZE);
+			if (val != null) bufferSize = val.intValue();		System.out.println("bufferSize="+bufferSize);	
 			
 			// and remaining args are positional - file names are not prefixed
-			String dataFile = line.getArgList().get(0);
-			String queryFile = line.getArgList().get(1);
+			String dataFile = line.getArgList().get(0);												System.out.println("dataFile="+dataFile);	
+			String queryFile = line.getArgList().get(1);											System.out.println("queryFile="+queryFile);	
 			
-			// create the matcher. The matcher ctor validates the passed data and query file names, and throws if they are invalid
-			RecordMatcher matcher = new RecordMatcher(
-					dataFile, 
-					queryFile,
-					minFreeMemRatio,
-					bufferSize,
-					isOptimizeDataReads,
-					isOptimizeQueryReads,
-					isVerbose,
-					isSuperVerbose
-					);
-
+			Matcher matcher = null;
+			if (isConcurrent) {
+				// create concurrent matcher. If parameters are set right - runs ~30% faster.
+				matcher = new ConcurrentRecordMatcher(
+						dataFile, 
+						queryFile,
+						workerCount,
+						bufferSize,
+						isVerbose,
+						isSuperVerbose
+						);
+			}
+			else {
+				matcher = new RecordMatcher(
+						dataFile, 
+						queryFile,
+						minFreeMemRatio,
+						bufferSize,
+						isOptimizeDataReads,
+						isOptimizeQueryReads,
+						isVerbose,
+						isSuperVerbose
+						);
+			}
+			
 			boolean isVerb = (isVerbose != null? isVerbose : false);
 			if (isVerb) {
 				System.out.println("data file : "+dataFile);
@@ -113,6 +136,10 @@ public class MatcherRunner {
 		Options options = new Options();
 
 		// add t option
+		options.addOption(OPT_CONCURRENT, false, "Run in concurrent mode: data reads and query matches run simutlaneously. May improve perfromrance somewhat."
+				+" In this mode the only other options that will have an effect are: "
+				+"-" + OPT_BUFFERSIZE + ", -" + OPT_WORKERCOUNT + ", -" + OPT_VERBOSE + " and -" +OPT_SUPERVERBOSE+"; the rest will be ignored." );
+		options.addOption(OPT_VERBOSE, false, "Verbose. In addition to the results will print some data such as record counts, JVM memory, etc.");
 		options.addOption(OPT_SUPERVERBOSE, false, "Very verbose. Super talkative, spits out data for each data row. Lots of screen output. PERFORMANCE KILLER!");
 		options.addOption(OPT_OPTIMIZE_DATAREADS, false, "Tries to optimize data reads by pre-loading all of data into memory. "
 				+"Has impact on performance (depends on many factors, such as JVM memory, buffer size, data file location, network speed, etc.) "
@@ -120,10 +147,18 @@ public class MatcherRunner {
 		options.addOption(OPT_OPTIMIZE_QUERYREADS, false, "Tries to optimize query reads by pre-loading all of queries into memory. "
 				+ "Has impact on performance (depends on many factors, such as JVM memory, buffer size, data file location, network speed, etc.). "
 				+" If you know that your query file is small enough to fit into memory - USE THIS FLAG.");
-		options.addOption(OPT_VERBOSE, false, "Verbose. In addition to the results will print some data such as record counts, JVM memory, etc.");
         options.addOption(OPT_HELP, false, "Prints this information.");
 
-		Option opt = Option.builder(OPT_MINFREEMEMRATIO)
+		Option opt1 = Option.builder(OPT_WORKERCOUNT)
+                .hasArg()
+                .argName("WORKERS")
+                .desc("(default: 1) When in concurrent mode: number of matcher threads to launch. "
+                		+"Experiment with it to see its effect on performance. Typical optimal value is 3-5.")
+                .build();
+		opt1.setType(Number.class);
+		options.addOption(opt1);
+
+		Option opt2 = Option.builder(OPT_MINFREEMEMRATIO)
                 .hasArg()
                 .argName("MIN_RATIO")
                 .desc("(default: 0.5) Base-1, positive number representing the minimal desired ratio of free-to-total-available memory. "
@@ -132,16 +167,16 @@ public class MatcherRunner {
                 		+"Setting it too high will dramatically worsen performance even with relatively small query files. "
                 		+"Experiment with it to see its effect on performance.")
                 .build();
-		opt.setType(Double.class);
-		options.addOption(opt);
+		opt2.setType(Number.class);
+		options.addOption(opt2);
 		
-		opt = Option.builder(OPT_BUFFERSIZE)
+		Option opt3 = Option.builder(OPT_BUFFERSIZE)
                 .hasArg()
                 .argName("SIZE")
                 .desc("(default: 8092) positive integer - buffer size for the file readers. Experiment with it to see its effect on performance.")
                 .build();
-		opt.setType(Integer.class);
-		options.addOption(opt);
+		opt3.setType(Number.class);
+		options.addOption(opt3);
 
 		return options;
 	}

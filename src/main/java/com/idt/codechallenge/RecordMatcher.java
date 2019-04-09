@@ -25,7 +25,7 @@ import com.google.gson.JsonObject;
  * @author leonidtomilchik
  *
  */
-public class RecordMatcher {
+public class RecordMatcher implements Matcher {
 	
 	// some defaults for RecordMatcher initializer
 	private final static double DEFAULT_MEMORY_RATIO = 0.5d;
@@ -96,7 +96,6 @@ public class RecordMatcher {
 	 * @param isOptQryReads when true - tries to pre-read entire data query into memory (default: false).
 	 * @param isVerb when true - generates some extra output
 	 * @param isSuperVerb when true - generates lots of extra output
-	 * @throws FileNotFoundException If any of the input files/URL's are not valid or not reachable.
 	 */
 	public RecordMatcher(
 			String dfleLocation, 
@@ -106,7 +105,7 @@ public class RecordMatcher {
 			Boolean isOptDataReads, 
 			Boolean isOptQryReads, 
 			Boolean isVerb, 
-			Boolean isSuperVerb) throws FileNotFoundException {
+			Boolean isSuperVerb) {
 
 		if (dfleLocation == null) throw new IllegalArgumentException("dataFileLocation cannot be null");
 		this.dataFileLocation = dfleLocation;
@@ -186,6 +185,7 @@ public class RecordMatcher {
 	 * @throws IOException some Readers managed outside try-with-resources may throw.
 	 * @return number of matches found
 	 */
+	@Override
 	public long match(OutputStream out) throws IOException {
 
 		if (isVerbose) {

@@ -1,11 +1,14 @@
 package com.idt.codechallenge.concurrent;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import com.idt.codechallenge.Matcher;
 
 
 /**
@@ -18,7 +21,7 @@ import java.util.concurrent.Future;
  * @author leonidtomilchik
  *
  */
-public class ConcurrentRecordMatcher {
+public class ConcurrentRecordMatcher implements Matcher {
 	
 	private final String dataFileLocation;
 	private final String queryFileLocation;
@@ -27,7 +30,7 @@ public class ConcurrentRecordMatcher {
 	private boolean isVerbose = false;
 	private boolean isSuperVerbose = false;
 	
-	ConcurrentRecordMatcher(String df, String qf, Integer psize, Integer bsize, Boolean isVerb, Boolean isSuperVerb) {
+	public ConcurrentRecordMatcher(String df, String qf, Integer psize, Integer bsize, Boolean isVerb, Boolean isSuperVerb) {
 		dataFileLocation = df;
 		queryFileLocation = qf;
 		poolSize = (psize == null? 1 : psize);
@@ -43,16 +46,18 @@ public class ConcurrentRecordMatcher {
 	 * 
 	 * Match is done when all threads are finished.
 	 * 
-	 * @param out
-	 * @return
+	 * @param out an OutpuStream to write result into. 
+	 * @throws IOException some Readers managed outside try-with-resources may throw.
+	 * @return number of matches found
 	 */
-	public long match(OutputStream out)  {
+	@Override
+	public long match(OutputStream out) throws IOException  {
 		
 	    long matchCount = 0;
 
 	    try {
 		    // create data reader
-			System.out.println("START");
+			if (isVerbose) System.out.println("START");
 			BufferedDataReader reader = BufferedDataReader.Builder.builder(dataFileLocation, queryFileLocation)
 					.withVerbose(isVerbose)
 					.withVeryVerbose(isSuperVerbose)
@@ -61,7 +66,7 @@ public class ConcurrentRecordMatcher {
 					;
 			// prior to using - must init
 			int qryRowCount = reader.init();
-			System.out.println("Read "+ qryRowCount + " queries");
+			if (isVerbose) System.out.println("Read "+ qryRowCount + " queries");
 	
 			// create workers
 			List<MatcherWorker> workers = new ArrayList<MatcherWorker>();
@@ -75,17 +80,16 @@ public class ConcurrentRecordMatcher {
 			// launch all:
 			// reader
 			Future<Long> readerResult = readerExecutor.submit(reader);
-			System.out.println("Started data reader...");
 		    
 			// workers
 			List<Future<Long>> matchResults = workerExecutor.invokeAll(workers);
-			System.out.println("Started workers...");
-	
+			
+			System.out.flush();	
 			readerExecutor.shutdown();	
 			workerExecutor.shutdown();	
 			
 		    long processedCount = readerResult.get();
-			System.out.println("Records processed: " + processedCount);
+		    if (isVerbose) System.out.println("Records processed: " + processedCount);
 	
 		    for (Future<Long> fL : matchResults) {
 		    	matchCount += fL.get();

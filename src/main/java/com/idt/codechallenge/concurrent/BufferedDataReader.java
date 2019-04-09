@@ -101,7 +101,7 @@ class BufferedDataReader implements DataReader, QueryHolder, Callable<Long> {
 		data = new ConcurrentLinkedQueue<String>();
 		BufferedReader dreader = Utils.openReader(dataFileLocation, bufferSize);
 		String line;
-		
+//System.out.println("*** BDR.call(): reader opened");			
 		long now = System.currentTimeMillis();
 		
 		while ((line = dreader.readLine()) != null) {
@@ -129,7 +129,9 @@ class BufferedDataReader implements DataReader, QueryHolder, Callable<Long> {
 	 */
 	int init() throws FileNotFoundException, IOException {
 		queries = new ArrayList<Set<String>>();
+//System.out.println("xxx BRD.init()");		
 		BufferedReader qreader = Utils.openReader(queryFileLocation, bufferSize);
+//System.out.println("xxx BRD.init(): opened reader");		
 		List<Set<String>> tempQueries = new ArrayList<Set<String>>();
 		String line;
 		while ((line = qreader.readLine()) != null) {
@@ -139,7 +141,7 @@ class BufferedDataReader implements DataReader, QueryHolder, Callable<Long> {
 		// TODO check if all queries have unique word sets?
 		
 		queries = Collections.unmodifiableList(tempQueries);
-		
+//System.out.println("xxx BRD.init(): read queries");			
 		return queries.size();
 	}
 
