@@ -21,3 +21,6 @@ The output will be:
 
 The second line (record) matches the query (it contains both `apple` and `red`) so if we count all other non query words this will give us the above output.
 The results are printed to the standard output.
+
+=============== UPD
+Addition of the concurrent impl of algo did not result in any dramatic performance increase - no more than 30%. Maybe worth it with data sizes in GB, but at 10's of MB - only a few seconds.
