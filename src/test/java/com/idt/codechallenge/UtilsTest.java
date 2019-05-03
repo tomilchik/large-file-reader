@@ -10,8 +10,6 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
@@ -151,7 +149,7 @@ public class UtilsTest extends AbstractTest {
         
         // TEST
         try {
-        	int locationType = Utils.getFileLocationType(fileName);	
+        	Utils.getFileLocationType(fileName);	
         }
         catch (Exception e) {
         	// good!
@@ -187,7 +185,7 @@ public class UtilsTest extends AbstractTest {
         String url = "file://" + pfile.toAbsolutePath().toString();
         // TEST
         try {
-        	int locationType = Utils.getFileLocationType(url);	
+        	Utils.getFileLocationType(url);	
         }
         catch (Exception e) {
         	// good!

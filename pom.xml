@@ -1,4 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>idt-test</groupId>
   <artifactId>idt-test</artifactId>
@@ -7,6 +10,7 @@
   <packaging>jar</packaging>
   
   <dependencies>
+  	<!-- ####################### Used in code ##################### -->
 	<!-- Gson for JSON processing -->
 	<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 	<dependency>
@@ -21,8 +25,17 @@
 	    <artifactId>commons-cli</artifactId>
 	    <version>1.4</version>
 	</dependency>
-	
-	<!-- Testing support. -->
+   <!-- Apache Commons Lang -->
+   <!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+	<dependency>
+	    <groupId>commons-lang</groupId>
+	    <artifactId>commons-lang</artifactId>
+	    <version>2.6</version>
+	</dependency>
+
+ 	<!-- ############################################ -->
+
+ 	<!-- ####################### Used for testing etc. ##################### -->
 	<!-- https://mvnrepository.com/artifact/junit/junit -->
 	<dependency>
 	    <groupId>junit</groupId>
@@ -38,6 +51,7 @@
 	</dependency>
 	
 	<!-- Mockito -->
+	<!-- this is Java 8 compatible
 	<dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
@@ -50,24 +64,88 @@
       <version>1.7.4</version>
       <scope>test</scope>
    </dependency>
-   
-   <!-- Apache Commons Lang -->
-   <!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+    -->
+    
+    <!-- this is Java 10 compatible -->
 	<dependency>
-	    <groupId>commons-lang</groupId>
-	    <artifactId>commons-lang</artifactId>
-	    <version>2.6</version>
+		<groupId>org.mockito</groupId>
+		<artifactId>mockito-core</artifactId>
+		<version>2.18.0</version>
 	</dependency>
+
+	<dependency>
+	  <groupId>org.powermock</groupId>
+	  <artifactId>powermock-api-mockito2</artifactId>
+	  <version>2.0.0-beta.5</version>
+	</dependency>
+	<dependency>
+		<groupId>org.powermock</groupId>
+	  	<artifactId>powermock-module-junit4</artifactId>
+	  	<version>2.0.0-beta.5</version>
+	</dependency>
+    <!-- END: this is Java 10 compatible -->
+
+   <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-site-plugin -->
+   <!-- this is needed for "mvn site" (stylecheck) to work -->
+	<dependency>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-site-plugin</artifactId>
+	    <version>3.7.1</version>
+	     <exclusions>
+	        <exclusion>  
+	          <groupId>org.sonatype.sisu</groupId>
+	          <artifactId>sisu-inject-plexus</artifactId>
+	        </exclusion>
+	      </exclusions> 
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.sonarsource.scanner.maven/sonar-maven-plugin -->
+	<!--  
+	<dependency>
+	    <groupId>org.sonarsource.scanner.maven</groupId>
+	    <artifactId>sonar-maven-plugin</artifactId>
+	    <version>3.6.0.1398</version>
+	</dependency>
+	-->	
+	<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
+	<dependency>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-dependency-plugin</artifactId>
+	    <version>3.0.0</version>
+	</dependency>
+	<!--    
+	<dependency>
+	    <groupId>org.codehaus.plexus</groupId>
+	    <artifactId>plexus-classworlds</artifactId>
+	    <version>2.6.0</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.codehaus.plexus</groupId>
+	    <artifactId>plexus-io</artifactId>
+	    <version>3.1.1</version>
+	</dependency>
+ 	-->
+	<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-pmd-plugin -->
+	<!-- PMD -->
+	<dependency>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-pmd-plugin</artifactId>
+	    <version>3.11.0</version>
+	</dependency>
+	
   </dependencies>
 
+	<!-- ################################################################################ -->
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.10</version>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
                 <configuration>
             		<source>1.8</source>
             		<target>1.8</target>
@@ -76,6 +154,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
             </plugin>
         	     <plugin>
 	            	<!--
@@ -114,6 +193,7 @@
 	        	<!--  adds source code to  separate jar  -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -127,7 +207,11 @@
 	   			<!-- generates javadoc, creates separate jar for it -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
+				<version>3.1.0</version>
+                <configuration>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                </configuration>				
+                <executions>
 					<execution>
 						<id>attach-javadocs</id>
 						<goals>
@@ -136,7 +220,6 @@
 					</execution>
 				</executions>
 			</plugin> 
-			<!-- 
 			<plugin>
 	            <groupId>org.jacoco</groupId>
 	            <artifactId>jacoco-maven-plugin</artifactId>
@@ -156,13 +239,53 @@
 	                </execution>
 	            </executions>
 	        </plugin>
-	         -->  
+	        
+            <!-- Checkstyle: to run style check (mvn checkstyle:checkstyle) -->
+            <!-- alt. configLocation>google_checks.xml</configLocation-->
+            <!--  do not run - too much console output
+        	<plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-checkstyle-plugin</artifactId>
+	            <version>3.0.0</version>
+	            <configuration>
+	                <configLocation>sun_checks.xml</configLocation>
+					<failsOnError>false</failsOnError>
+					<failOnViolation>false</failOnViolation>
+ 	            </configuration>
+	            <executions>
+ 			       <execution>
+            			<goals>
+                			<goal>check</goal>
+            			</goals>
+        			</execution>
+    			</executions>
+	        </plugin>
+	         -->
+	        
+            <!-- SpotBugs -->
+            <!-- DOES NOT WORK with Java 8+ -->
+	        <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>3.1.11</version>
+                <dependencies>
+				    <dependency>
+				      <groupId>com.github.spotbugs</groupId>
+				      <artifactId>spotbugs</artifactId>
+				      <version>4.0.0-beta1</version>
+				    </dependency>             
+                </dependencies>   
+            </plugin>
+            <!--  -->       
+	        
         </plugins>
         
         <finalName>${project.artifactId}</finalName>
     </build>
-    <!-- 
+    
+    <!-- ########################################## -->
     <reporting>
+        <!-- these plugins will generate pretty reporting. To run: mvn site -->
 	    <plugins>
     	  	<plugin>
         		<groupId>org.apache.maven.plugins</groupId>
@@ -170,11 +293,27 @@
         		<version>2.6</version>
       		</plugin>
       		<plugin>
+      			<!-- JaCoCo (coverage) -->
             	<groupId>org.jacoco</groupId>
             	<artifactId>jacoco-maven-plugin</artifactId>
             	<version>0.8.3</version>
         	</plugin>
+        	<plugin>
+        		<!-- Checkstyle: to generate report (mvn site) -->
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-checkstyle-plugin</artifactId>
+	            <version>3.0.0</version>
+	            <configuration>	            
+	                <!-- configLocation>google_checks.xml</configLocation-->
+	                <configLocation>sun_checks.xml</configLocation>
+	            </configuration>
+	        </plugin>  
+	        <plugin>
+	           <!-- SpotBugs -->
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>3.1.8</version>
+            </plugin>            
     	</plugins>
   	</reporting>
- 	-->
 </project>
