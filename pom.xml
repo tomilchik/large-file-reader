@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>idt-test</groupId>
   <artifactId>idt-test</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.1-SNAPSHOT</version>
   <name>idt-test</name>
   <packaging>jar</packaging>
   
