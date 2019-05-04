@@ -22,11 +22,15 @@
         <name>69ed9f2be225-snapshots</name>
         <url>http://localhost:8081/artifactory/largefilereader-mvn-dev-local</url>
     </snapshotRepository>
-</distributionManagement>
+  </distributionManagement>
 
     <!-- Integraiton with git -->
+  <properties>
+    <scm.connection/>
+  </properties>  
     <scm>
-        <developerConnection>scm:git:https://github.com/tomilchik/large-file-reader</developerConnection>
+        <developerConnection>${scm.connection}</developerConnection>
+        <!--  developerConnection>scm:git:https://github.com/tomilchik/large-file-reader</developerConnection-->
       <tag>test release</tag>
   </scm>
   
