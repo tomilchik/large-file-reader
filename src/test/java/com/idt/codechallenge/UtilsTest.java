@@ -120,7 +120,6 @@ public class UtilsTest extends AbstractTest {
 	 * Cannot use @Test(expected IOException.class): 
 	 * some prep steps include IOExceptions that are not expected, and must be treated as fail.
 	 * 
-	 * @throws IOException 
 	 */
 	@Test
 	public void test_OpenReader_NonExistingFile() {

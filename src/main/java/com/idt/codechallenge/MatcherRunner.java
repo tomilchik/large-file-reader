@@ -184,7 +184,7 @@ public class MatcherRunner {
 	/**
 	 * Prints help info to console.
 	 */
-	private static void help(Options options) {
+	public static void help(Options options) {
 		// automatically generate the help statement from CLI Options (including usage and descriptions of all args)...
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp( "java [javaopts] MatcherRunner [options] dfile qfile \nusage from jar: java [javaopts] -jar jarfile [options]", options );

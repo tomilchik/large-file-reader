@@ -79,7 +79,8 @@ public class Utils {
 	 * @param fileLocation file path or URL
 	 * @param bufferSize size of BufferedReader buffer
 	 * @return opened BufferedInputStream
-	 * @throws IOException when file location is invalid, on unreadable
+	 * @throws IOException when file URL is invalid, on unreadable
+	 * @throws FileNotFoundException when local file location is invalid, on unreadable
 	 */
 	public static BufferedReader openReader(String fileLocation, int bufferSize) throws IOException, FileNotFoundException {
 		int locationType = getFileLocationType(fileLocation);
