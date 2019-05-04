@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>idt-test</groupId>
   <artifactId>idt-test</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3-SNAPSHOT</version>
   <name>idt-test</name>
   <packaging>jar</packaging>
   
@@ -31,7 +31,7 @@
     <scm>
         <developerConnection>${scm.connection}</developerConnection>
         <!--  developerConnection>scm:git:https://github.com/tomilchik/large-file-reader</developerConnection-->
-      <tag>idt-test-0.0.2</tag>
+      <tag>test release</tag>
   </scm>
   
   <dependencies>
