@@ -1,11 +1,8 @@
-<project 
-	xmlns="http://maven.apache.org/POM/4.0.0" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>idt-test</groupId>
   <artifactId>idt-test</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>idt-test</name>
   <packaging>jar</packaging>
   
@@ -30,7 +27,8 @@
     <!-- Integraiton with git -->
     <scm>
         <developerConnection>scm:git:https://github.com/tomilchik/large-file-reader</developerConnection>
-    </scm>
+      <tag>test release</tag>
+  </scm>
   
   <dependencies>
   	<!-- ####################### Used in code ##################### -->
