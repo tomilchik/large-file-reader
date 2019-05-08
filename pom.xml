@@ -24,7 +24,15 @@
     </snapshotRepository>
   </distributionManagement>
 
-    <!-- Integraiton with git -->
+    <!-- Integration with git -->
+    <!--  
+    This pattern takes Git details out of this pom.xml and moves it to mvn command line:
+    - specify empty property
+    - set developeConnection to it;
+    - provide value via mvn ... -Dscm.connection
+    
+    To run release from Eclipse though - must have these details here.
+     -->
   <properties>
     <scm.connection />
   </properties>  
@@ -230,8 +238,7 @@
 	   		</plugin> 
 	   		<plugin>
 	   			<!-- generates javadoc, creates separate jar for it -->
-	   			<!-- don't do javadoc. 
-	   			Somehow this plugin works from Eclipse, but fails when running mvn outside of it.-->
+	   			<!-- for this to work with jenv-managed Java: must have HACK in place with symlink to javadoc placed in JAVA_HOME/fre/bin -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.1.0</version>
@@ -290,7 +297,7 @@
 	         -->
 	        
             <!-- SpotBugs -->
-            <!-- DOES NOT WORK with Java 8+ -->
+            <!-- DOES NOT WORK with Java 9+ -->
 	        <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
