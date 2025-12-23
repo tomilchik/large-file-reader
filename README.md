@@ -9,11 +9,15 @@ For each query in the query file the utility finds the matching records in the d
 For each query and matching record the output is a JSON dictionary with the non-query words and their count.
 
 For example for the following data records:
+
 red,sky,coin,bucket,chair,blue
+
 apple,chair,purple,red,house
+
 silver,blue,apple,coin,street
 
 And the query:
+
 red,apple
 
 The output will be:
